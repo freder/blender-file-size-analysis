@@ -32,7 +32,12 @@ def analyzeBlendFile(filePath, thresholdMb):
 		else:
 			statsDetailed[code][typeName] = sizeMb
 
-	for key, value in stats.items():
+	sortedItems = sorted(
+		stats.items(),
+		key=lambda it: it[1],
+		reverse=True
+	)
+	for key, value in sortedItems:
 		if value >= thresholdMb:
 			print(f'{key}: {value:.2f} MB')
 
@@ -40,6 +45,7 @@ def analyzeBlendFile(filePath, thresholdMb):
 	print(f'Total: {totalSize:.2f} MB')
 	print()
 
+	# remove anything below the threshold
 	remove = []
 	for code in statsDetailed.keys():
 		for typeName, value in statsDetailed[code].items():
@@ -48,6 +54,7 @@ def analyzeBlendFile(filePath, thresholdMb):
 	for code, typeName in remove:
 		del statsDetailed[code][typeName]
 
+	# remove empty entries
 	remove = []
 	for code in statsDetailed.keys():
 		if len(statsDetailed[code]) == 0:
@@ -57,7 +64,12 @@ def analyzeBlendFile(filePath, thresholdMb):
 
 	for code in statsDetailed.keys():
 		print(code)
-		for typeName, value in statsDetailed[code].items():
+		sortedItems = sorted(
+			statsDetailed[code].items(),
+			key=lambda it: it[1],
+			reverse=True
+		)
+		for typeName, value in sortedItems:
 			print(f'  {typeName}: {value:.2f} MB')
 
 
